@@ -62,7 +62,6 @@ while True :
 	try :
 
 		#main loop
-
 		#Continue with changing ID
 		for TwitterID in dctTwitter :
 			#Wait 1s for twitter api policy
