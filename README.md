@@ -3,7 +3,7 @@ This project is for getting translated SNS(Blog, Twitter, etc...) contents from 
 BUT you can use this bot for all tweets, sending with all your own telegram bots (Please refer "How to use?" example for details)
 
 ## Motivation
-The members of Aqours are Japanese. So, they're use Japanese.
+The members of Aqours are Japanese. So, they use Japanese.
 But many of fans from overseas can't read jp. Also they want to know what the members say. (include me)
 So I started this project for everyone who loves "Lovelive! Sunshine!!"
 
