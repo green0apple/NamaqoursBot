@@ -19,19 +19,27 @@ Please refer "How to use?" example
 
 ## How to use?
 0. Prepare(All cases for using)
+
         0-1) Add API tokens for Papago(Translate), Telegram(Send message), Twitter
+
                 0-1-1) Loading Papago token by modifying conf/naver/papago/api.ini
+
                 0-1-2) Loading Telegram token by modifying conf/telegram/api.ini
+
                 0-1-3) Loading Twitter token by modifying conf/twitter/api.ini
 
 1. If you use this bot for normal, Just run with command "python3 NamaqoursBot.py"
 
 2. If you use this bot for getting another twitter users' tweets
+
 	2-1) Add or delete Twitter ID by modifying conf/twitter/id.ini
+
 	2-2) Run with commend "python3 NamaqoursBot.py"
 
 3. If you use this bot for another language(default Japanese -> Korean)
+
 	3-1) Modifying conf/naver/papago/lang.ini
+
 	3-2) Run with commend "python3 NamaqoursBot.py"
 
 4. For another using case, or you have any answer about this program, please contact to green0apple@naver.com(Only Korean, Japanese, English)
