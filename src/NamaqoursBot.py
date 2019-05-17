@@ -83,7 +83,7 @@ while True :
 						PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 						print('New retweet from [' + sNickname + '] at ', datetime.datetime.now())
-						print(sTweet.encode('utf8'))
+#						print(sTweet.encode('utf8'))
 						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
 					#--end of if
 					else :
@@ -93,7 +93,7 @@ while True :
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 
 						print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
-						print(sTweet.encode('utf8'))
+#						print(sTweet.encode('utf8'))
 						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
 					#--end of else
 
