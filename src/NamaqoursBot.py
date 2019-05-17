@@ -57,11 +57,11 @@ for sID in dctTwitter :
 	time.sleep(1)
 #--end of for
 
+#main loop
 while True :
 
 	try :
 
-		#main loop
 		#Continue with changing ID
 		for TwitterID in dctTwitter :
 			#Wait 1s for twitter api policy
