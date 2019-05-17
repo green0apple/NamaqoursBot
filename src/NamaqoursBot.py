@@ -87,7 +87,7 @@ while True :
 						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
 					#--end of if
 					else :
-						sTweet = Timeline.full_text.encode('utf-8')
+						sTweet = Timeline.full_text
 						sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
 						PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
