@@ -1,3 +1,8 @@
+! README.md is under modifying. So project explanation is not good, Please understand.
+
+! If you have any question, please contact to "green0apple@naver.com"(Only Korean, Japanese, English)
+
+
 ## Project title
 This project is for getting translated SNS(Blog, Twitter, etc...) contents from members of group "Aqours" in anime "Lovelive! Sunshine!!" (Voice actress)
 BUT you can use this bot for all tweets, sending with all your own telegram bots (Please refer "How to use?" example for details)
@@ -28,13 +33,13 @@ Please refer "How to use?" example
 		0-2-2) pip3 install python-twitter
 		
 
-        0-3) Add API tokens for Papago(Translate), Telegram(Send message), Twitter
+	0-3) Add API tokens for Papago(Translate), Telegram(Send message), Twitter
 
-                0-3-1) Loading Papago token by modifying conf/naver/papago/api.ini
+		0-3-1) Loading Papago token by modifying conf/naver/papago/api.ini
 
-                0-3-2) Loading Telegram token by modifying conf/telegram/api.ini
+		0-3-2) Loading Telegram token by modifying conf/telegram/api.ini
 
-                0-3-3) Loading Twitter token by modifying conf/twitter/api.ini
+		0-3-3) Loading Twitter token by modifying conf/twitter/api.ini
 
 1. If you use this bot for normal, Just run with command "python3 NamaqoursBot.py"
 
@@ -46,11 +51,9 @@ Please refer "How to use?" example
 
 3. If you use this bot for another language(default Japanese -> Korean)
 
-	3-1) Modifying conf/naver/papago/lang.ini
+	3-1) Modifying conf/naver/papago/api.ini
 
 	3-2) Run with commend "python3 NamaqoursBot.py"
-
-4. For another using case, or you have any answer about this program, please contact to green0apple@naver.com(Only Korean, Japanese, English)
 
 
 ## License
