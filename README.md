@@ -11,22 +11,30 @@ So I started this project for everyone who loves "Lovelive! Sunshine!!"
 [Version 0.9] - 190516 KST
 1. All of tweets from "conf/twitter/id.ini" are sent to telegram bot(test bot for only developer) with JP->KR translated contents
 
-## Installation
-On modifying
-
 ## Tests
 Please refer "How to use?" example
 
-## How to use?
+## How to use? (With installation)
 0. Prepare(All cases for using)
+	
+	0-1) Install Python3
+		
+		0-1-1) apt-get install python3
 
-        0-1) Add API tokens for Papago(Translate), Telegram(Send message), Twitter
+	0-2) Install required libraries 
+		
+		0-2-1) pip3 install python-telegram-bot
+		
+		0-2-2) pip3 install python-twitter
+		
 
-                0-1-1) Loading Papago token by modifying conf/naver/papago/api.ini
+        0-3) Add API tokens for Papago(Translate), Telegram(Send message), Twitter
 
-                0-1-2) Loading Telegram token by modifying conf/telegram/api.ini
+                0-3-1) Loading Papago token by modifying conf/naver/papago/api.ini
 
-                0-1-3) Loading Twitter token by modifying conf/twitter/api.ini
+                0-3-2) Loading Telegram token by modifying conf/telegram/api.ini
+
+                0-3-3) Loading Twitter token by modifying conf/twitter/api.ini
 
 1. If you use this bot for normal, Just run with command "python3 NamaqoursBot.py"
 
@@ -44,10 +52,6 @@ Please refer "How to use?" example
 
 4. For another using case, or you have any answer about this program, please contact to green0apple@naver.com(Only Korean, Japanese, English)
 
-## Credits
-On modifying
-
-#### Anything else that seems useful
 
 ## License
 On modifying
