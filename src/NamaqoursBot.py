@@ -95,7 +95,7 @@ while True :
 
 						print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
 #						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
-						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
 					#--end of else
 
                                         #Update last tweet time
