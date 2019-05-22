@@ -35,7 +35,7 @@ twAPI = twitter.Api(iniTwitter['NamaqoursBot']['consumer_key'],
 		    iniTwitter['NamaqoursBot']['access_token_secret'],
 		    tweet_mode='extended')
 
-#Get TwitterID, Nickname(optional)
+#Get TwitterID, Nickname
 dctTwitter = {}
 for sNumber, sID in iniTwitterID.items('ID') :
 	if iniTwitterID.has_option('Nickname', sID) :
@@ -54,6 +54,7 @@ def TwitterTimeToDatetime(sCreatedAt) :
 for sID in dctTwitter :
 	print(sID)
 	dctTwitter[sID]['Timestamp'] = twAPI.GetUserTimeline(screen_name=sID,count=5)[0].created_at;
+	#Wait 1s for Twitter API policy
 	time.sleep(1)
 #--end of for
 
@@ -83,8 +84,8 @@ while True :
 						PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 						print('New retweet from [' + sNickname + '] at ', datetime.datetime.now())
-#						print(sTweet.encode('utf8'))
-						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
+#						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
+						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
 					#--end of if
 					else :
 						sTweet = Timeline.full_text
@@ -93,8 +94,8 @@ while True :
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 
 						print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
-#						print(sTweet.encode('utf8'))
-						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
+#						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
+						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
 					#--end of else
 
                                         #Update last tweet time
