@@ -12,6 +12,8 @@ from urllib.parse import urlparse
 #Read configfile for API keys
 iniTelegram = configparser.RawConfigParser()
 iniTelegram.read('../conf/telegram/api.ini')
+iniTelegramID = configparser.RawConfigParser()
+iniTelegramID.read('../conf/telegram/message.ini')
 iniTwitter = configparser.RawConfigParser()
 iniTwitter.read('../conf/twitter/api.ini')
 iniTwitterID = configparser.RawConfigParser()
@@ -27,6 +29,12 @@ PAPAGO_JP_TO_KR_QUERY = 'source=' + iniPapago['AqoursBotSMT']['SourceLang'] + '&
 
 #Set telegram API
 telAPI = telegram.Bot(token=iniTelegram['NamaqoursBot']['token'])
+
+#Set telegram ID. Bot will be sent new tweet to this ID
+#You can add user id, channel name, group name
+sTelegramID = iniTelegramID['Message']['IDtoReceive']
+#Set Admin ID. Bot will be sent error message to this ID
+sTelegramAdmin = iniTelegramID['Message']['AdminID']
 
 #Set twitter API
 twAPI = twitter.Api(iniTwitter['NamaqoursBot']['consumer_key'],
@@ -84,8 +92,7 @@ while True :
 						PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 						print('New retweet from [' + sNickname + '] at ', datetime.datetime.now())
-#						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
-						telAPI.send_message(chat_id='440486473', text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+						telAPI.send_message(chat_id=sTelegramID, text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
 					#--end of if
 					else :
 						sTweet = Timeline.full_text
@@ -94,8 +101,7 @@ while True :
 						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 
 						print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
-#						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Original]' + '\n' + sTweet + '\n' + '[Translated]' + '\n' + sTranslated)
-						telAPI.send_message(chat_id='440486473', text='New tweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+						telAPI.send_message(chat_id=sTelegramID, text='New tweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
 					#--end of else
 
                                         #Update last tweet time
@@ -107,7 +113,7 @@ while True :
 	except Exception as err:
 		print('ERROR TIME : ', datetime.datetime.now())
 		print('ERROR : ', err)
-		telAPI.send_message(chat_id='440486473', text='ERROR : ' + str(err))
+		telAPI.send_message(chat_id=sTelegramAdmin, text='ERROR : ' + str(err))
 	#--end of try
 #--end of while
 
