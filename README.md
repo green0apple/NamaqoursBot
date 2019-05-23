@@ -35,12 +35,12 @@ You can use any editor to edit ini file, not only nano
     $ nano NamaqoursBot/conf/naver/papago/api.ini
     ```
     Please refer below table for information of section, key, value
-    | Section/key                        | Explanation              |
-    | ---------------------------------- | ------------------------ |
-    | AqoursBotSMT/X_Naver_Client_Id     | Papago SMT API ID        |
-    | AqoursBotSMT/X_Naver_Client_Secret | Papago SMT API secret    |
-    | AqoursBotSMT/SourceLang            | Original text languege   |
-    | AqoursBotSMT/TargetLang            | Translated text languege |
+	| Section/key                        | Explanation              |
+	| ---------------------------------- | ------------------------ |
+	| AqoursBotSMT/X_Naver_Client_Id     | Papago SMT API ID        |
+	| AqoursBotSMT/X_Naver_Client_Secret | Papago SMT API secret    |
+	| AqoursBotSMT/SourceLang            | Original text languege   |
+	| AqoursBotSMT/TargetLang            | Translated text languege |
 * ##### Add Twitter API secret and key
     #
     ```sh
@@ -102,6 +102,8 @@ You can use any editor to edit ini file, not only nano
 
 ## License
 This program follows MIT license. Please read LICENSE.txt
+#
 If you use this program as commercial, you MUST notify to green0apple@naver.com before use it.
+#
 If you use this program as non-commercial, please nofity to green0apple@naver.com.
 
