@@ -113,7 +113,10 @@ while True :
 	except Exception as err:
 		print('ERROR TIME : ', datetime.datetime.now())
 		print('ERROR : ', err)
-		telAPI.send_message(chat_id=sTelegramAdmin, text='ERROR : ' + str(err))
+
+		#bug : if error is Request Timeout, can't use API(network)
+		if err != 'Timed out' :
+			telAPI.send_message(chat_id=sTelegramAdmin, text='ERROR : ' + str(err))
 	#--end of try
 #--end of while
 
