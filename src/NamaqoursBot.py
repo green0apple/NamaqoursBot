@@ -106,8 +106,10 @@ while True :
 
                                         #Update last tweet time
 					dctTwitter[TwitterID]['Timestamp'] = Timeline.created_at
-
 				#--end of if
+
+				#Wait about 100ms for Papago API policy(10requests/1sec)
+				time.sleep(0.11)
 			#--end of for
 		#--end of for
 	except Exception as err:
