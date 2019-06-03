@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ! README.md is under modifying. So project explanation is not good, 
 Please understand. ! If you have any question, please contact to 
 "green0apple@naver.com"(Only Korean, Japanese, English)
@@ -8,12 +9,29 @@ contents from members of group "Aqours" in anime "Lovelive! Sunshine!!"
 (Voice actress) BUT you can use this bot for all tweets, sending with 
 all your own telegram bots (Please refer "How to use?" example for 
 details)
+=======
+! README.md is under modifying. So project explanation is not good, Please understand.
+
+! If you have any question, please contact to "green0apple@naver.com"(Only Korean, Japanese, English)
+
+
+## Project title
+This project is for getting translated SNS(Blog, Twitter, etc...) contents from members of group "Aqours" in anime "Lovelive! Sunshine!!" (Voice actress)
+BUT you can use this bot for all tweets, sending with all your own telegram bots (Please refer "How to use?" example for details)
+
+## Motivation
+The members of Aqours are Japanese. So, they use Japanese.
+But many of fans from overseas can't read jp. Also they want to know what the members say. (include me)
+So I started this project for everyone who loves "Lovelive! Sunshine!!"
+
+>>>>>>> parent of 2bf3924... Update README.md
 ## Build status
 [Version 0.9] - 190516 KST 1. All of tweets from "conf/twitter/id.ini" 
 are sent to telegram bot(test bot for only developer) with JP->KR 
 translated contents
 ## Tests
 Please refer "How to use?" example
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## Installation
 #
@@ -113,6 +131,8 @@ green0apple@naver.com before use it.
 If you use this program as non-commercial, please nofity to 
 green0apple@naver.com.
 =======
+=======
+>>>>>>> parent of 2bf3924... Update README.md
 
 ## How to use? (With installation)
 0. Prepare(All cases for using)
@@ -137,9 +157,15 @@ green0apple@naver.com.
 		0-3-3) Loading Twitter token by modifying conf/twitter/api.ini
 
 1. If you use this bot for normal, Just run with command "python3 NamaqoursBot.py"
+<<<<<<< HEAD
 
 2. If you use this bot for getting another twitter users' tweets
 
+=======
+
+2. If you use this bot for getting another twitter users' tweets
+
+>>>>>>> parent of 2bf3924... Update README.md
 	2-1) Add or delete Twitter ID by modifying conf/twitter/id.ini
 
 	2-2) Run with commend "python3 NamaqoursBot.py"
@@ -153,4 +179,7 @@ green0apple@naver.com.
 
 ## License
 On modifying
+<<<<<<< HEAD
+>>>>>>> parent of 2bf3924... Update README.md
+=======
 >>>>>>> parent of 2bf3924... Update README.md
