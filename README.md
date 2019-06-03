@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ! README.md is under modifying. So project explanation is not good, 
 Please understand. ! If you have any question, please contact to 
 "green0apple@naver.com"(Only Korean, Japanese, English)
@@ -13,6 +14,7 @@ are sent to telegram bot(test bot for only developer) with JP->KR
 translated contents
 ## Tests
 Please refer "How to use?" example
+<<<<<<< HEAD
 ## Installation
 #
 * Install Python3
@@ -110,3 +112,45 @@ green0apple@naver.com before use it.
 #
 If you use this program as non-commercial, please nofity to 
 green0apple@naver.com.
+=======
+
+## How to use? (With installation)
+0. Prepare(All cases for using)
+	
+	0-1) Install Python3
+		
+		0-1-1) apt-get install python3
+
+	0-2) Install required libraries 
+		
+		0-2-1) pip3 install python-telegram-bot
+		
+		0-2-2) pip3 install python-twitter
+		
+
+	0-3) Add API tokens for Papago(Translate), Telegram(Send message), Twitter
+
+		0-3-1) Loading Papago token by modifying conf/naver/papago/api.ini
+
+		0-3-2) Loading Telegram token by modifying conf/telegram/api.ini
+
+		0-3-3) Loading Twitter token by modifying conf/twitter/api.ini
+
+1. If you use this bot for normal, Just run with command "python3 NamaqoursBot.py"
+
+2. If you use this bot for getting another twitter users' tweets
+
+	2-1) Add or delete Twitter ID by modifying conf/twitter/id.ini
+
+	2-2) Run with commend "python3 NamaqoursBot.py"
+
+3. If you use this bot for another language(default Japanese -> Korean)
+
+	3-1) Modifying conf/naver/papago/api.ini
+
+	3-2) Run with commend "python3 NamaqoursBot.py"
+
+
+## License
+On modifying
+>>>>>>> parent of 2bf3924... Update README.md
