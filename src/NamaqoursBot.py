@@ -9,6 +9,99 @@ import datetime
 import urllib.request
 from urllib.parse import urlparse
 
+class TwitterSender
+	def __init__(self) :
+		iniTwitter = configparser.RawConfigParser()
+		iniTwitter.read('../conf/twitter/api.ini')
+		iniTwitterID = configparser.RawConfigParser()
+		iniTwitterID.read('../conf/twitter/id.ini')
+		#Set twitter API
+		twAPI = twitter.Api(iniTwitter['NamaqoursBot']['consumer_key'],
+							iniTwitter['NamaqoursBot']['consumer_secret'],
+							iniTwitter['NamaqoursBot']['access_token_key'],
+							iniTwitter['NamaqoursBot']['access_token_secret'],
+							tweet_mode='extended')
+		#Get TwitterID, Nickname
+		jsOldTweets = []
+		for sNumber, sID in iniTwitterID.items('ID') :
+			if iniTwitterID.has_option('Nickname', sID) :
+				jsOldTweets.appand = {"id": sID, "Nickname": iniTwitterID['Nickname'][sID], "Timeline": None, "Timestamp": None}
+			else :
+				jsOldTweets.appand = {"id": sID, "Nickname": sID, "Timeline": None, "Timestamp": None}
+		#--end of for
+
+		#Get users timeline (default init)
+		#Count of timeline return from each GetUserTimeline is 5
+		for sID in dctTwitter :
+			print(sID)
+			dtTwitter[sID]['Timestamp'] = twAPI.GetUserTimeline(screen_name=sID,count=5)[0].created_at;
+			#Wait 1s for Twitter API policy
+			time.sleep(1)
+		#--end of for
+
+	#Twitter created_at time to python datetime
+	def __TwitterTimeToDatetime(sCreatedAt) :
+		return time.strptime(sCreatedAt, '%a %b %d %H:%M:%S +0000 %Y')
+	#--end of TwitterTimeToDatetime
+
+	def execute(self) :
+		while True :
+			try :
+				#Continue with changing ID
+				for TwitterID in dctTwitter :
+					#Wait 1s for twitter api policy
+					time.sleep(1)
+
+					#Get timeline
+					arTimeline = twAPI.GetUserTimeline(screen_name=TwitterID,count=5)
+
+					#Compare last tweet time with gotten timelines(5)
+					arTimeline.reverse()
+					for Timeline in arTimeline :
+						#If last tweet time is older then new tweet, print new tweet
+						if TwitterTimeToDatetime(dctTwitter[TwitterID]['Timestamp']) < TwitterTimeToDatetime(Timeline.created_at) :
+							sNickname = dctTwitter[TwitterID]['Nickname']
+							#If new tweet is retweet
+							if Timeline.retweeted_status != None :
+								sTweet = Timeline.retweeted_status.full_text
+								sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
+								PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
+								sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
+								print('New retweet from [' + sNickname + '] at ', datetime.datetime.now())
+								telAPI.send_message(chat_id=sTelegramID, text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+							#--end of if
+							else :
+								sTweet = Timeline.full_text
+								sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
+								PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
+								sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
+								print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
+								telAPI.send_message(chat_id=sTelegramID, text='New tweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+							#--end of else
+
+							#Update last tweet time
+							dctTwitter[TwitterID]['Timestamp'] = Timeline.created_at
+							#--end of if
+						#Wait about 100ms for Papago API policy(10requests/1sec)
+						time.sleep(0.11)
+					#--end of for
+				#--end of for
+			except Exception as err:
+				print('ERROR TIME : ', datetime.datetime.now())
+		                print('ERROR : ', err)
+		                #bug : if error is Request Timeout, can't use API(network)
+		                if err != 'Timed out' :
+					telAPI.send_message(chat_id=sTelegramAdmin, text='ERROR : ' + str(err))
+			#--end of try
+		#--end of while
+	#--end of execute
+#--eid of class TwitterSender
+
+
+
+class InstaSender
+
+
 #Read configfile for API keys
 iniTelegram = configparser.RawConfigParser()
 iniTelegram.read('../conf/telegram/api.ini')
@@ -57,71 +150,70 @@ def TwitterTimeToDatetime(sCreatedAt) :
 	return time.strptime(sCreatedAt, '%a %b %d %H:%M:%S +0000 %Y')
 #--end of TwitterTimeToDatetime
 
-#Get users timeline (default init)
-#Count of timeline return from each GetUserTimeline is 5
-for sID in dctTwitter :
-	print(sID)
-	dctTwitter[sID]['Timestamp'] = twAPI.GetUserTimeline(screen_name=sID,count=5)[0].created_at;
-	#Wait 1s for Twitter API policy
-	time.sleep(1)
-#--end of for
+	#Get users timeline (default init)
+	#Count of timeline return from each GetUserTimeline is 5
+	for sID in dctTwitter :
+		print(sID)
+		dctTwitter[sID]['Timestamp'] = twAPI.GetUserTimeline(screen_name=sID,count=5)[0].created_at;
+		#Wait 1s for Twitter API policy
+		time.sleep(1)
+	#--end of for
 
-#main loop
-while True :
+	#main loop
+	while True :
 
-	try :
+		try :
 
-		#Continue with changing ID
-		for TwitterID in dctTwitter :
-			#Wait 1s for twitter api policy
-			time.sleep(1)
+			#Continue with changing ID
+			for TwitterID in dctTwitter :
+				#Wait 1s for twitter api policy
+				time.sleep(1)
 
-			#Get timeline
-			arTimeline = twAPI.GetUserTimeline(screen_name=TwitterID,count=5)
+				#Get timeline
+				arTimeline = twAPI.GetUserTimeline(screen_name=TwitterID,count=5)
 
-			#Compare last tweet time with gotten timelines(5)
-			arTimeline.reverse()
-			for Timeline in arTimeline :
-				#If last tweet time is older then new tweet, print new tweet
-				if TwitterTimeToDatetime(dctTwitter[TwitterID]['Timestamp']) < TwitterTimeToDatetime(Timeline.created_at) :
-					sNickname = dctTwitter[TwitterID]['Nickname']
-					#If new tweet is retweet
-					if Timeline.retweeted_status != None :
-						sTweet = Timeline.retweeted_status.full_text
-						sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
-						PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
-						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
-						print('New retweet from [' + sNickname + '] at ', datetime.datetime.now())
-						telAPI.send_message(chat_id=sTelegramID, text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+				#Compare last tweet time with gotten timelines(5)
+				arTimeline.reverse()
+				for Timeline in arTimeline :
+					#If last tweet time is older then new tweet, print new tweet
+					if TwitterTimeToDatetime(dctTwitter[TwitterID]['Timestamp']) < TwitterTimeToDatetime(Timeline.created_at) :
+						sNickname = dctTwitter[TwitterID]['Nickname']
+						#If new tweet is retweet
+						if Timeline.retweeted_status != None :
+							sTweet = Timeline.retweeted_status.full_text
+							sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
+							PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
+							sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
+							print('New retweet from [' + sNickname + '] at ', datetime.datetime.now())
+							telAPI.send_message(chat_id=sTelegramID, text='New retweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+						#--end of if
+						else :
+							sTweet = Timeline.full_text
+							sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
+							PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
+							sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
+
+							print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
+							telAPI.send_message(chat_id=sTelegramID, text='New tweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
+						#--end of else
+
+                	                        #Update last tweet time
+						dctTwitter[TwitterID]['Timestamp'] = Timeline.created_at
 					#--end of if
-					else :
-						sTweet = Timeline.full_text
-						sData = PAPAGO_JP_TO_KR_QUERY + urllib.parse.quote(sTweet)
-						PapagoResp = urllib.request.urlopen(reqPapago, data=sData.encode('utf-8'))
-						sTranslated = json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
 
-						print('New tweet from [' + sNickname + '] at ', datetime.datetime.now())
-						telAPI.send_message(chat_id=sTelegramID, text='New tweet from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTweet)
-					#--end of else
-
-                                        #Update last tweet time
-					dctTwitter[TwitterID]['Timestamp'] = Timeline.created_at
-				#--end of if
-
-				#Wait about 100ms for Papago API policy(10requests/1sec)
-				time.sleep(0.11)
+					#Wait about 100ms for Papago API policy(10requests/1sec)
+					time.sleep(0.11)
+				#--end of for
 			#--end of for
-		#--end of for
-	except Exception as err:
-		print('ERROR TIME : ', datetime.datetime.now())
-		print('ERROR : ', err)
+		except Exception as err:
+			print('ERROR TIME : ', datetime.datetime.now())
+			print('ERROR : ', err)
 
-		#bug : if error is Request Timeout, can't use API(network)
-		if err != 'Timed out' :
-			telAPI.send_message(chat_id=sTelegramAdmin, text='ERROR : ' + str(err))
-	#--end of try
-#--end of while
-
-#--End of main
+			#bug : if error is Request Timeout, can't use API(network)
+			if err != 'Timed out' :
+				telAPI.send_message(chat_id=sTelegramAdmin, text='ERROR : ' + str(err))
+		#--end of try
+	#--end of while
+#--End of execute
 
 
