@@ -33,7 +33,8 @@ You can use any editor to edit ini file, not only nano
     ```sh
     $ nano NamaqoursBot/conf/naver/papago/api.ini
     ```
-    Please refer below table for information of section, key, value
+Please refer below table for information of section, key, value
+
     | Section/key                        | Explanation              |
     | ---------------------------------- | ------------------------ |
     | AqoursBotSMT/X_Naver_Client_Id     | Papago SMT API ID        |
@@ -45,7 +46,8 @@ You can use any editor to edit ini file, not only nano
     ```sh
     $ nano NamaqoursBot/conf/twitter/api.ini
     ```
-    Please refer below table for information of section, key, value
+Please refer below table for information of section, key, value
+
     | Section/key                      | Explanation                     |
     | -------------------------------- | ------------------------------- |
     | NamaqoursBot/consumer_key        | Twitter API consumer key        |
@@ -57,12 +59,14 @@ You can use any editor to edit ini file, not only nano
     ```sh
     $ nano NamaqoursBot/conf/twitter/id.ini
     ```
-    Please refer below table for information of section, key, value
+Please refer below table for information of section, key, value
+
     | Section/key    | Explanation                         |
     | -------------- | ----------------------------------- |
     | ID/{Number}    | Twitter ID you want to get timeline |
     | Nickname/{ID}  | Nickname for Twitter ID (Optional)  |
-    For example, Twitter IDs are "Lovelive, Sunshine" and Nickname "anju, suwawa"
+    
+For example, Twitter IDs are "Lovelive, Sunshine" and Nickname "anju, suwawa"
     ```
     [ID]
     0=Lovelive
@@ -86,13 +90,15 @@ You can use any editor to edit ini file, not only nano
     ```sh
     $ nano NamaqoursBot/conf/telegram/api.ini
     ```
-    Please refer below table for information of section, key, value
+Please refer below table for information of section, key, value
+
     | Section/key                      | Explanation                     |
     | -------------------------------- | ------------------------------- |
     | NamaqoursBot/consumer_key        | Twitter API consumer key        |
     | NamaqoursBot/consumer_secret     | Twitter API consumer secret     |
     | NamaqoursBot/access_token_key    | Twitter API access token key    |
     | NamaqoursBot/access_token_secret | Twitter API access token secret |
+    
 * ##### Run Bot
     #
     ```sh
