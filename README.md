@@ -35,12 +35,13 @@ You can use any editor to edit ini file, not only nano
     ```
 Please refer below table for information of section, key, value
 
-    | Section/key                        | Explanation              |
-    | ---------------------------------- | ------------------------ |
-    | AqoursBotSMT/X_Naver_Client_Id     | Papago SMT API ID        |
-    | AqoursBotSMT/X_Naver_Client_Secret | Papago SMT API secret    |
-    | AqoursBotSMT/SourceLang            | Original text languege   |
-    | AqoursBotSMT/TargetLang            | Translated text languege |
+| Section/key                        | Explanation              |
+| ---------------------------------- | ------------------------ |
+| AqoursBotSMT/X_Naver_Client_Id     | Papago SMT API ID        |
+| AqoursBotSMT/X_Naver_Client_Secret | Papago SMT API secret    |
+| AqoursBotSMT/SourceLang            | Original text languege   |
+| AqoursBotSMT/TargetLang            | Translated text languege |
+
 * ##### Add Twitter API secret and key
     #
     ```sh
@@ -61,10 +62,10 @@ Please refer below table for information of section, key, value
     ```
 Please refer below table for information of section, key, value
 
-    | Section/key    | Explanation                         |
-    | -------------- | ----------------------------------- |
-    | ID/{Number}    | Twitter ID you want to get timeline |
-    | Nickname/{ID}  | Nickname for Twitter ID (Optional)  |
+| Section/key    | Explanation                         |
+| -------------- | ----------------------------------- |
+| ID/{Number}    | Twitter ID you want to get timeline |
+| Nickname/{ID}  | Nickname for Twitter ID (Optional)  |
     
 For example, Twitter IDs are "Lovelive, Sunshine" and Nickname "anju, suwawa"
     ```
@@ -92,12 +93,12 @@ For example, Twitter IDs are "Lovelive, Sunshine" and Nickname "anju, suwawa"
     ```
 Please refer below table for information of section, key, value
 
-    | Section/key                      | Explanation                     |
-    | -------------------------------- | ------------------------------- |
-    | NamaqoursBot/consumer_key        | Twitter API consumer key        |
-    | NamaqoursBot/consumer_secret     | Twitter API consumer secret     |
-    | NamaqoursBot/access_token_key    | Twitter API access token key    |
-    | NamaqoursBot/access_token_secret | Twitter API access token secret |
+| Section/key                      | Explanation                     |
+| -------------------------------- | ------------------------------- |
+| NamaqoursBot/consumer_key        | Twitter API consumer key        |
+| NamaqoursBot/consumer_secret     | Twitter API consumer secret     |
+| NamaqoursBot/access_token_key    | Twitter API access token key    |
+| NamaqoursBot/access_token_secret | Twitter API access token secret |
     
 * ##### Run Bot
     #
