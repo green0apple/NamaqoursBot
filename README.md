@@ -1,7 +1,6 @@
 ! If you have any question, please contact to "green0apple@naver.com"(Only Korean, Japanese, English)
 
 
-## Project title
 ## NamAqoursBot
 This project is for getting translated SNS(Blog, Twitter, etc...) contents from members of group "Aqours" in anime "Lovelive! Sunshine!!" (Voice actress)
 BUT you can use this bot for all tweets, sending with all your own telegram bots (Please refer "How to use?" example for details)
@@ -14,7 +13,6 @@ BUT you can use this bot for all tweets, sending with all your own telegram bots
 Please refer "How to use?" example
 
 ## Installation
-#
 * Install Python3
 ```sh	
 $ sudo apt-get install python3
