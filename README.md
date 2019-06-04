@@ -95,12 +95,20 @@ $ nano NamaqoursBot/conf/telegram/api.ini
 ```
 Please refer below table for information of section, key, value
 
-| Section/key                      | Explanation                     |
-| -------------------------------- | ------------------------------- |
-| NamaqoursBot/consumer_key        | Twitter API consumer key        |
-| NamaqoursBot/consumer_secret     | Twitter API consumer secret     |
-| NamaqoursBot/access_token_key    | Twitter API access token key    |
-| NamaqoursBot/access_token_secret | Twitter API access token secret |
+| Section/key        | Explanation            |
+| ------------------ | ---------------------- |
+| NamaqoursBot/token | Telegram bot API token |
+
+* #####  Add Telegram ID for receiving tweets and error message
+```sh
+$ nano NamaqoursBot/conf/telegram/message.ini
+```
+Please refer below table for information of section, key, value
+
+| Section/key         | Explanation                                              |
+| ------------------- | -------------------------------------------------------- |
+| Message/IDtoReceive | Telegram ID(or chat, group) for receiveing tweet message |
+| Message/Admin       | Telegram ID(or chat, group) receiveing error message     |
     
 * ##### Run Bot
 ```sh
