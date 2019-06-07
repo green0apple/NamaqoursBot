@@ -7,8 +7,11 @@ import time
 import telegram.bot
 import datetime
 import urllib.request
+import threading
 from urllib.parse import urlparse
-from threading import Thread, Lock
+import sys
+sys.path.append('..')
+from insta import Instagram
 
 class TwitterSender(threading.Thread):
 	def __init__(self) :
@@ -26,40 +29,47 @@ class TwitterSender(threading.Thread):
 		self.__jsOldTweets = []
 		for sNumber, sID in self.__iniTwitterID.items('ID') :
 			if self.__iniTwitterID.has_option('Nickname', sID) :
-				self.__jsOldTweets.appand = {"id": sID, "nickname": self.__iniTwitterID['Nickname'][sID], "timeline": None, "timestamp": None}
+				self.__jsOldTweets.append({"id": sID, "nickname": self.__iniTwitterID['Nickname'][sID], "timeline": None, "timestamp": None})
 			else :
-				self.__jsOldTweets.appand = {"id": sID, "nickname": sID, "timeline": None, "timestamp": None}
+				self.__jsOldTweets.append({"id": sID, "nickname": sID, "timeline": None, "timestamp": None})
 		#--end of for
 
 		#Get users timeline (default init)
 		#Count of timeline return from each GetUserTimeline is 5
 		for jsOldTweet in self.__jsOldTweets :
+			print("Twitter ID Init : " + jsOldTweet['id']);
 			jsOldTweet['timestamp'] = self.__twAPI.GetUserTimeline(screen_name=jsOldTweet['id'],count=5)[0].created_at;
 			#Wait 1s for Twitter API policy
 			time.sleep(1)
 		#--end of for
-
+		
+		#Init thread
+		threading.Thread.__init__(self)
+		
+	#--end if __init__
 	#Twitter created_at time to python datetime
+	@staticmethod
 	def __TwitterTimeToDatetime(sCreatedAt) :
 		return time.strptime(sCreatedAt, '%a %b %d %H:%M:%S +0000 %Y')
 	#--end of TwitterTimeToDatetime
 
-	def execute(self) :
+	def run(self) :
+		print('TwitterSender : start run')
 		while True :
 			try :
 				#Continue with changing ID
 				for jsOldTweet in self.__jsOldTweets :
 					#Wait 1s for twitter api policy
 					time.sleep(1)
-					sID = jsOldTweets['id']
+					sID = jsOldTweet['id']
 					#Get timeline
-					arTimeline = twAPI.GetUserTimeline(screen_name=sID,count=5)
+					arTimeline = self.__twAPI.GetUserTimeline(screen_name=sID,count=5)
 
 					#Compare last tweet time with gotten timelines(5)
 					arTimeline.reverse()
 					for Timeline in arTimeline :
 						#If last tweet time is older then new tweet, print new tweet
-						if TwitterTimeToDatetime(jsOldTweet['timestamp']) < TwitterTimeToDatetime(Timeline.created_at) :
+						if self.__TwitterTimeToDatetime(jsOldTweet['timestamp']) < self.__TwitterTimeToDatetime(Timeline.created_at) :
 							sNickname = jsOldTweet['nickname']
 							#If new tweet is retweet
 							if Timeline.retweeted_status != None :
@@ -86,70 +96,75 @@ class TwitterSender(threading.Thread):
 				#--end of for
 			except Exception as err:
 				print('ERROR TIME : ', datetime.datetime.now())
-		                print('ERROR : ', err)
-		                #bug : if error is Request Timeout, can't use API(network)
-		                if err != 'Timed out' :
-						TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
+				print('ERROR : ', err)
+				#bug : if error is Request Timeout, can't use API(network)
+				if err != 'Timed out' :
+					TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
 			#--end of try
 		#--end of while
-	#--end of execute
-#--eid of class TwitterSender
+	#--end of run
+#--end of class TwitterSender
 
 class InstaSender(threading.Thread):
 	def __init__(self) :
 		#Read configfile for Instagram ID
 		self.__iniInstagram = configparser.RawConfigParser()
-		self.__iniInstagram.read('../conf/id.ini')
+		self.__iniInstagram.read('../conf/instagram/id.ini')
 		
 		#Init Instagram crawler
 		self.__instaCrawler = Instagram()
 
 		#Get Insta ID, Nickname
 		self.__jsOldTimelines = []
-		for sNumber, sID in iniInstagram.items('ID') :
-			if iniInstagram.has_option('Nickname', sID) :
-				self.__jsOldTimelines.append( {"id": sID, "nickname": iniInstagram['Nickname'][sID], "timeline": {"contents": None, "timestamp": 0}} )
+		for sNumber, sID in self.__iniInstagram.items('ID') :
+			if self.__iniInstagram.has_option('Nickname', sID) :
+				self.__jsOldTimelines.append( {"id": sID, "nickname": self.__iniInstagram['Nickname'][sID], "timestamp": 0} )
 			else :
-				self.__jsOldTimelines.append( {"id": sID, "nickname": sID, "timeline": {"contents": None, "timestamp": 0}} )
+				self.__jsOldTimelines.append( {"id": sID, "nickname": sID, "timestamp": 0} )
 		#--end of for
 		
 		#Get users timeline (default init)
-		#Count of timeline return from each GetUserTimeline is 5
 		for jsOldTimeline in self.__jsOldTimelines :
-			print(self.__jsOldTimeline['id'])
+			print("Instagram ID Init : " + jsOldTimeline['id']);
 			jsEdges = self.__instaCrawler.GetProfilePage(jsOldTimeline['id'])[0]['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']['edges']
-			jsOldTimeline['timeline'] = self.__instaCrawler.GetTimelines(jsEdges)[0]
+			jsOldTimeline['timestamp'] = jsEdges[0]['node']['taken_at_timestamp']
 			#Wait 1s for decreasing crawling speed
 			time.sleep(1)
 		#--end of for
+		
+		#Init thread
+		threading.Thread.__init__(self)
+		
 	#--end of __init__
 	
-	def execute(self) :
+	def run(self) :
+		print('InstaSender : start run')
 		while True :
 			try :
 				#Get old timeline to compare with new timeline
-				for jsOldTimeline in jsOldTimelines :
+				for jsOldTimeline in self.__jsOldTimelines :
 					#Wait 1s for decreasing crawling speed
 					time.sleep(1)
 
 					#Get timeline
-					jsProfile = instaCrawler.GetProfilePage(jsOldTimeline['id'])
+					jsProfile = self.__instaCrawler.GetProfilePage(jsOldTimeline['id'])
 					jsEdges = jsProfile[0]['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']['edges']
-					jsTimelines = self.__instaCrawler.GetTimelines(jsEdges)
-
+					
 					#Get new timeline to compare with old timeline
-					for jsTimeline in jsTimelines :
+					for jsEdge in jsEdges :
 						#If last post time is older then new one, print
-						if jsOldTimeline['timeline']['timestamp'] < jsTimeline['timestamp'] :
-							sNickname = jsOldTimeline['nickname']
+						if jsOldTimeline['timestamp'] < jsEdge['node']['taken_at_timestamp'] :
+							jsTimeline = self.__instaCrawler.GetTimeline(jsEdge)
 							sTimeline = jsTimeline['contents']
+							sLink = jsTimeline['link']
+							sNickname = jsOldTimeline['nickname']
 							sData = urllib.parse.quote(sTimeline)
 							sTranslated = PapagoSMT(sData)
 							print('New timeline from [' + sNickname + '] at ', datetime.datetime.now())
-							TelegramSendMessage(sTelegramID, text='New timeline from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTimeline)
+							TelegramSendMessage(sTelegramID, 'New timeline from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTimeline + '\n' + sLink )
 
 							#Update last timeline
-							jsOldTimeline['timeline'] = jsTimeline
+							jsOldTimeline['timestamp'] = jsEdge['node']['taken_at_timestamp']
 
 						#--end of if
 					#--end of for
@@ -162,9 +177,8 @@ class InstaSender(threading.Thread):
 				if err != 'Timed out' :
 					TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
 			#--end of try
-		print('debug::running InstagramCrawler')
 		#--end of while
-	#--end of execute
+	#--end of run
 #--end of class InstaSender
 
 
@@ -196,21 +210,27 @@ if __name__ == '__main__':
 	mtxPapago = threading.Lock()
 
 	#Set telegram API
+	iniTelegram = configparser.RawConfigParser()
+	iniTelegram.read('../conf/telegram/api.ini')
 	telBot = telegram.Bot(token=iniTelegram['NamaqoursBot']['token'])
 
 	#Set telegram ID. Bot will be sent new tweet to this ID
 	#You can add user id, channel name, group name
+	iniTelegramID = configparser.RawConfigParser()
+	iniTelegramID.read('../conf/telegram/message.ini')
 	sTelegramID = iniTelegramID['Message']['IDtoReceive']
 	#Set Admin ID. Bot will be sent error message to this ID
 	sTelegramAdmin = iniTelegramID['Message']['AdminID']
 
 	#Run Thread
-	tsTwitterSender = TwitterSender();
-	tsTwitterSender.start()
-	isInstaSender = InstagramCrawler();
-	isInstaSender.start()
+	#tsTwitterSender = TwitterSender()
+	#tsTwitterSender.start()
+	#print('Twitter thread started')
+	istInstaSender = InstaSender()
+	istInstaSender.start()
+	print('Instagram thread started')
 	while True:
-		pass()
+		pass
 	#--end of while
 
 	print('End of program. Never com here')
