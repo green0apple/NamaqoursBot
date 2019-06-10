@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 import sys
 import os
-import urllib.request
+import requests
 import json
 import configparser
 import telegram
@@ -25,14 +25,18 @@ class Instagram:
 		self.__INSTA_JSON_TAG_TEXT = 'window._sharedData = '
 		self.__INSTA_URL = 'https://www.instagram.com/'
 		self.__INSTA_TIMELINE_NODE = '/p/'
+		self.__REQUEST_HEADER = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit 537.36 (KHTML, like Gecko) Chrome", "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"}
 
 	def GetProfilePage(self, sID) :
 		#Get Insta timeline
-		reqInsta = urllib.request.Request(self.__INSTA_URL + sID)
-		rspInsta = urllib.request.urlopen(reqInsta)
-		soupInsta = BeautifulSoup(rspInsta.read(), 'html.parser')
+		#reqInsta = urllib.request.Request(self.__INSTA_URL + sID, None, {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'})
+		#rspInsta = urllib.request.urlopen(reqInsta)
+		#soupInsta = BeautifulSoup(rspInsta.read(), 'html.parser')
+		#arTags = soupInsta.findAll(self.__INSTA_JSON_TAG, attrs=self.__INSTA_JSON_TAG_ATTRS)
+		reqSession = requests.session()
+		rspSession = reqSession.get(self.__INSTA_URL + sID, headers = self.__REQUEST_HEADER).content
+		soupInsta = BeautifulSoup(rspSession, 'html.parser')
 		arTags = soupInsta.findAll(self.__INSTA_JSON_TAG, attrs=self.__INSTA_JSON_TAG_ATTRS)
-
 		#Find Insta timeline info(json)
 		sJson = ''
 		for Tag in arTags :
@@ -53,10 +57,13 @@ class Instagram:
 		sShortcode = jsEdge['node']['shortcode']
 		#Get contents of timeline(html)
 		sLink = self.__INSTA_URL + self.__INSTA_TIMELINE_NODE + sShortcode
-		reqInsta = urllib.request.Request(sLink)
-		rspInsta = urllib.request.urlopen(reqInsta)
+		#reqInsta = urllib.request.Request(sLink, None, {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'})
+		#rspInsta = urllib.request.urlopen(reqInsta)
 		#Parse html
-		soupInsta = BeautifulSoup(rspInsta.read(), 'html.parser')
+		#soupInsta = BeautifulSoup(rspInsta.read(), 'html.parser')
+		reqSession = requests.session()
+		rspSession = reqSession.get(sLink, headers = self.__REQUEST_HEADER).content
+		soupInsta = BeautifulSoup(rspSession, 'html.parser')
 		#Get contents of timeline(text)
 		tagTitle = soupInsta.find('title')
 		sContents = tagTitle.text

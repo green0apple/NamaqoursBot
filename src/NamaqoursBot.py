@@ -1,3 +1,5 @@
+#!/usr/bin/python3 -u
+
 ##-*- coding:utf-8 -*-
 import configparser
 import json
@@ -63,8 +65,9 @@ class TwitterSender(threading.Thread):
 					time.sleep(1)
 					sID = jsOldTweet['id']
 					#Get timeline
+					mtxURLRquest.acquire()
 					arTimeline = self.__twAPI.GetUserTimeline(screen_name=sID,count=5)
-
+					mtxURLRquest.release()
 					#Compare last tweet time with gotten timelines(5)
 					arTimeline.reverse()
 					for Timeline in arTimeline :
@@ -94,12 +97,19 @@ class TwitterSender(threading.Thread):
 						time.sleep(0.11)
 					#--end of for
 				#--end of for
+				#For thread safe
+				time.sleep(0.05)
+				print('TWITTER THREAD RUNNING')
 			except Exception as err:
-				print('ERROR TIME : ', datetime.datetime.now())
-				print('ERROR : ', err)
+				if mtxURLRquest.locked == True : 
+					mtxURLRquest.release()
+				#--end of if
+				print('TWITTER THREAD ERROR TIME : ', datetime.datetime.now())
+				print('TWITTER THREADERROR : ', err)
 				#bug : if error is Request Timeout, can't use API(network)
 				if err != 'Timed out' :
 					TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
+				continue
 			#--end of try
 		#--end of while
 	#--end of run
@@ -126,7 +136,9 @@ class InstaSender(threading.Thread):
 		#Get users timeline (default init)
 		for jsOldTimeline in self.__jsOldTimelines :
 			print("Instagram ID Init : " + jsOldTimeline['id']);
+			mtxURLRquest.acquire()
 			jsEdges = self.__instaCrawler.GetProfilePage(jsOldTimeline['id'])[0]['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']['edges']
+			mtxURLRquest.release()
 			jsOldTimeline['timestamp'] = jsEdges[0]['node']['taken_at_timestamp']
 			#Wait 1s for decreasing crawling speed
 			time.sleep(1)
@@ -144,17 +156,24 @@ class InstaSender(threading.Thread):
 				#Get old timeline to compare with new timeline
 				for jsOldTimeline in self.__jsOldTimelines :
 					#Wait 1s for decreasing crawling speed
-					time.sleep(1)
+					time.sleep(2)
 
 					#Get timeline
+					mtxURLRquest.acquire()
 					jsProfile = self.__instaCrawler.GetProfilePage(jsOldTimeline['id'])
+					mtxURLRquest.release()
 					jsEdges = jsProfile[0]['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']['edges']
 					
 					#Get new timeline to compare with old timeline
 					for jsEdge in jsEdges :
 						#If last post time is older then new one, print
 						if jsOldTimeline['timestamp'] < jsEdge['node']['taken_at_timestamp'] :
+							#Wait 1s for decreasing crawling speed
+							time.sleep(1)
+
+							mtxURLRquest.acquire()
 							jsTimeline = self.__instaCrawler.GetTimeline(jsEdge)
+							mtxURLRquest.release()
 							sTimeline = jsTimeline['contents']
 							sLink = jsTimeline['link']
 							sNickname = jsOldTimeline['nickname']
@@ -169,13 +188,20 @@ class InstaSender(threading.Thread):
 						#--end of if
 					#--end of for
 				#--end of for
+				#For thread safe
+				time.sleep(0.05)
+				print('INSTAGRAM THREAD RUNNING')
 			except Exception as err:
-				print('ERROR TIME : ', datetime.datetime.now())
-				print('ERROR : ', err)
+				if mtxURLRquest.locked == True : 
+					mtxURLRquest.release()
+				#--end of if
+				print('INSTAGRAM THREAD ERROR TIME : ', datetime.datetime.now())
+				print('INSTAGRAM THREAD ERROR : ', err)
 
 				#bug : if error is Request Timeout, can't use API(network)
 				if err != 'Timed out' :
 					TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
+				continue
 			#--end of try
 		#--end of while
 	#--end of run
@@ -183,31 +209,35 @@ class InstaSender(threading.Thread):
 
 
 def TelegramSendMessage(sID, sText):
-	mtxTelegram.acquire()
+	#mtxURLRquest.acquire()
 	telBot.send_message(chat_id=sID, text=sText)
-	mtxTelegram.release()
+	#mtxURLRquest.release()
 #--end of TelegramSendMessage
 
 def PapagoSMT(sText):
-	mtxPapago.acquire()
 	sText = PAPAGO_JP_TO_KR_QUERY + sText
-	PapagoResp = urllib.request.urlopen(reqPapago, data=sText.encode('utf-8'))
-	return json.loads(PapagoResp.read().decode('utf-8'))['message']['result']['translatedText']
-	mtxPapago.release()
+	mtxURLRquest.acquire()
+	#reqPapago = urllib.request.Request(reqPapago, sText.encode('utf-8'), {'User-agent' : 'Mozilla/5.0'})
+	#PapagoResp = urllib.request.urlopen(reqPapago, data=sText.encode('utf-8'), {'User-agent' : 'Mozilla/5.0'})
+	sTranslated = json.loads(urllib.request.urlopen(reqPapago, data=sText.encode('utf-8')).read().decode('utf-8'))['message']['result']['translatedText']
+	mtxURLRquest.release()
+	return sTranslated
 #--end of PapagoSMT
 	
 if __name__ == '__main__':
+
+	mtxURLRquest = threading.Lock()
+	
 	#Read configfile for API keys
 	iniPapago = configparser.RawConfigParser()
 	iniPapago.read('../conf/naver/papago/api.ini')
-	mtxTelegram = threading.Lock()
 
 	#Set Papago API
 	reqPapago = urllib.request.Request('https://openapi.naver.com/v1/language/translate')
 	reqPapago.add_header('X-Naver-Client-Id',iniPapago['AqoursBotSMT']['X_Naver_Client_Id'])
 	reqPapago.add_header('X-Naver-Client-Secret',iniPapago['AqoursBotSMT']['X_Naver_Client_Secret'])
+	reqPapago.add_header('User-agent', 'Mozilla/5.0')
 	PAPAGO_JP_TO_KR_QUERY = 'source=' + iniPapago['AqoursBotSMT']['SourceLang'] + '&target=' + iniPapago['AqoursBotSMT']['TargetLang'] + '&text='
-	mtxPapago = threading.Lock()
 
 	#Set telegram API
 	iniTelegram = configparser.RawConfigParser()
@@ -223,14 +253,18 @@ if __name__ == '__main__':
 	sTelegramAdmin = iniTelegramID['Message']['AdminID']
 
 	#Run Thread
-	#tsTwitterSender = TwitterSender()
-	#tsTwitterSender.start()
-	#print('Twitter thread started')
+	tsTwitterSender = TwitterSender()
 	istInstaSender = InstaSender()
-	istInstaSender.start()
-	print('Instagram thread started')
+	arThreads = [tsTwitterSender, istInstaSender]
+	#arThreads = [istInstaSender]
+	for t in arThreads:
+		t.start()
+	#--end of for
+	
 	while True:
-		pass
+		for t in arThreads:
+			t.join()
+		#--end of for
 	#--end of while
 
 	print('End of program. Never com here')
