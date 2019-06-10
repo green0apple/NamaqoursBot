@@ -99,7 +99,6 @@ class TwitterSender(threading.Thread):
 				#--end of for
 				#For thread safe
 				time.sleep(0.05)
-				print('TWITTER THREAD RUNNING')
 			except Exception as err:
 				if mtxURLRquest.locked == True : 
 					mtxURLRquest.release()
@@ -247,16 +246,16 @@ if __name__ == '__main__':
 
 	#Set telegram ID. Bot will be sent new tweet to this ID
 	#You can add user id, channel name, group name
-#	iniTelegramID = configparser.RawConfigParser()
-#	iniTelegramID.read('../conf/telegram/message.ini')
-#	sTelegramID = iniTelegramID['Message']['IDtoReceive']
+	iniTelegramID = configparser.RawConfigParser()
+	iniTelegramID.read('../conf/telegram/message.ini')
+	sTelegramID = iniTelegramID['Message']['IDtoReceive']
 	#Set Admin ID. Bot will be sent error message to this ID
 	sTelegramAdmin = iniTelegramID['Message']['AdminID']
 
 	#Run Thread
 	tsTwitterSender = TwitterSender()
 #	istInstaSender = InstaSender()
-	arThreads = [tsTwitterSender, istInstaSender]
+#	arThreads = [tsTwitterSender, istInstaSender]
 	arThreads = [tsTwitterSender]
 	for t in arThreads:
 		t.start()
