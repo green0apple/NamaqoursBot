@@ -115,6 +115,9 @@ class TwitterSender(threading.Thread):
 	#--end of run
 #--end of class TwitterSender
 
+# Instagram not supported
+# Maybe Instagram blocks robot. Random reset packet received from Instagram
+"""
 class InstaSender(threading.Thread):
 	def __init__(self) :
 		#Read configfile for Instagram ID
@@ -206,19 +209,17 @@ class InstaSender(threading.Thread):
 		#--end of while
 	#--end of run
 #--end of class InstaSender
-
+"""
 
 def TelegramSendMessage(sID, sText):
-	#mtxURLRquest.acquire()
+	mtxURLRquest.acquire()
 	telBot.send_message(chat_id=sID, text=sText)
-	#mtxURLRquest.release()
+	mtxURLRquest.release()
 #--end of TelegramSendMessage
 
 def PapagoSMT(sText):
 	sText = PAPAGO_JP_TO_KR_QUERY + sText
 	mtxURLRquest.acquire()
-	#reqPapago = urllib.request.Request(reqPapago, sText.encode('utf-8'), {'User-agent' : 'Mozilla/5.0'})
-	#PapagoResp = urllib.request.urlopen(reqPapago, data=sText.encode('utf-8'), {'User-agent' : 'Mozilla/5.0'})
 	sTranslated = json.loads(urllib.request.urlopen(reqPapago, data=sText.encode('utf-8')).read().decode('utf-8'))['message']['result']['translatedText']
 	mtxURLRquest.release()
 	return sTranslated
@@ -246,17 +247,17 @@ if __name__ == '__main__':
 
 	#Set telegram ID. Bot will be sent new tweet to this ID
 	#You can add user id, channel name, group name
-	iniTelegramID = configparser.RawConfigParser()
-	iniTelegramID.read('../conf/telegram/message.ini')
-	sTelegramID = iniTelegramID['Message']['IDtoReceive']
+#	iniTelegramID = configparser.RawConfigParser()
+#	iniTelegramID.read('../conf/telegram/message.ini')
+#	sTelegramID = iniTelegramID['Message']['IDtoReceive']
 	#Set Admin ID. Bot will be sent error message to this ID
 	sTelegramAdmin = iniTelegramID['Message']['AdminID']
 
 	#Run Thread
 	tsTwitterSender = TwitterSender()
-	istInstaSender = InstaSender()
+#	istInstaSender = InstaSender()
 	arThreads = [tsTwitterSender, istInstaSender]
-	#arThreads = [istInstaSender]
+	arThreads = [tsTwitterSender]
 	for t in arThreads:
 		t.start()
 	#--end of for
