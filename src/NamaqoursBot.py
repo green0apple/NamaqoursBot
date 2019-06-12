@@ -13,7 +13,6 @@ import threading
 from urllib.parse import urlparse
 import sys
 sys.path.append('..')
-from insta import Instagram
 
 class TwitterSender(threading.Thread):
 	def __init__(self) :
@@ -107,102 +106,6 @@ class TwitterSender(threading.Thread):
 		#--end of while
 	#--end of run
 #--end of class TwitterSender
-
-# Instagram not supported
-# Maybe Instagram blocks robot. Random reset packet received from Instagram
-"""
-class InstaSender(threading.Thread):
-	def __init__(self) :
-		#Read configfile for Instagram ID
-		self.__iniInstagram = configparser.RawConfigParser()
-		self.__iniInstagram.read('../conf/instagram/id.ini')
-		
-		#Init Instagram crawler
-		self.__instaCrawler = Instagram()
-
-		#Get Insta ID, Nickname
-		self.__jsOldTimelines = []
-		for sNumber, sID in self.__iniInstagram.items('ID') :
-			if self.__iniInstagram.has_option('Nickname', sID) :
-				self.__jsOldTimelines.append( {"id": sID, "nickname": self.__iniInstagram['Nickname'][sID], "timestamp": 0} )
-			else :
-				self.__jsOldTimelines.append( {"id": sID, "nickname": sID, "timestamp": 0} )
-		#--end of for
-		
-		#Get users timeline (default init)
-		for jsOldTimeline in self.__jsOldTimelines :
-			print("Instagram ID Init : " + jsOldTimeline['id']);
-			mtxURLRquest.acquire()
-			jsEdges = self.__instaCrawler.GetProfilePage(jsOldTimeline['id'])[0]['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']['edges']
-			mtxURLRquest.release()
-			jsOldTimeline['timestamp'] = jsEdges[0]['node']['taken_at_timestamp']
-			#Wait 1s for decreasing crawling speed
-			time.sleep(1)
-		#--end of for
-		
-		#Init thread
-		threading.Thread.__init__(self)
-		
-	#--end of __init__
-	
-	def run(self) :
-		print('InstaSender : start run')
-		while True :
-			try :
-				#Get old timeline to compare with new timeline
-				for jsOldTimeline in self.__jsOldTimelines :
-					#Wait 1s for decreasing crawling speed
-					time.sleep(2)
-
-					#Get timeline
-					mtxURLRquest.acquire()
-					jsProfile = self.__instaCrawler.GetProfilePage(jsOldTimeline['id'])
-					mtxURLRquest.release()
-					jsEdges = jsProfile[0]['entry_data']['ProfilePage'][0]['graphql']['user']['edge_owner_to_timeline_media']['edges']
-					
-					#Get new timeline to compare with old timeline
-					for jsEdge in jsEdges :
-						#If last post time is older then new one, print
-						if jsOldTimeline['timestamp'] < jsEdge['node']['taken_at_timestamp'] :
-							#Wait 1s for decreasing crawling speed
-							time.sleep(1)
-
-							mtxURLRquest.acquire()
-							jsTimeline = self.__instaCrawler.GetTimeline(jsEdge)
-							mtxURLRquest.release()
-							sTimeline = jsTimeline['contents']
-							sLink = jsTimeline['link']
-							sNickname = jsOldTimeline['nickname']
-							sData = urllib.parse.quote(sTimeline)
-							sTranslated = PapagoSMT(sData)
-							print('New timeline from [' + sNickname + '] at ', datetime.datetime.now())
-							TelegramSendMessage(sTelegramID, 'New timeline from [' + sNickname + ']' + '\n' + '[Translated]' + '\n' + sTranslated + '\n' + '[Original]' + '\n' + sTimeline + '\n' + sLink )
-
-							#Update last timeline
-							jsOldTimeline['timestamp'] = jsEdge['node']['taken_at_timestamp']
-
-						#--end of if
-					#--end of for
-				#--end of for
-				#For thread safe
-				time.sleep(0.05)
-				print('INSTAGRAM THREAD RUNNING')
-			except Exception as err:
-				if mtxURLRquest.locked == True : 
-					mtxURLRquest.release()
-				#--end of if
-				print('INSTAGRAM THREAD ERROR TIME : ', datetime.datetime.now())
-				print('INSTAGRAM THREAD ERROR : ', err)
-
-				#bug : if error is Request Timeout, can't use API(network)
-				if err != 'Timed out' :
-					TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
-				continue
-			#--end of try
-		#--end of while
-	#--end of run
-#--end of class InstaSender
-"""
 
 def TelegramSendMessage(sID, sText):
 	telBot.send_message(chat_id=sID, text=sText)
