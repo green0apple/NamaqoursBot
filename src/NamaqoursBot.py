@@ -17,6 +17,8 @@ from insta import Instagram
 
 class TwitterSender(threading.Thread):
 	def __init__(self) :
+		self.__MAX_TIMELINES_COUNT = 10
+	
 		self.__iniTwitter = configparser.RawConfigParser()
 		self.__iniTwitter.read('../conf/twitter/api.ini')
 		self.__iniTwitterID = configparser.RawConfigParser()
@@ -40,7 +42,7 @@ class TwitterSender(threading.Thread):
 		#Count of timeline return from each GetUserTimeline is 5
 		for jsOldTweet in self.__jsOldTweets :
 			print("Twitter ID Init : " + jsOldTweet['id']);
-			jsOldTweet['timestamp'] = self.__twAPI.GetUserTimeline(screen_name=jsOldTweet['id'],count=5)[0].created_at;
+			jsOldTweet['timestamp'] = self.__twAPI.GetUserTimeline(screen_name=jsOldTweet['id'],count=self.__MAX_TIMELINES_COUNT)[0].created_at;
 			#Wait 1s for Twitter API policy
 			time.sleep(1)
 		#--end of for
@@ -65,10 +67,8 @@ class TwitterSender(threading.Thread):
 					time.sleep(1)
 					sID = jsOldTweet['id']
 					#Get timeline
-					mtxURLRquest.acquire()
-					arTimeline = self.__twAPI.GetUserTimeline(screen_name=sID,count=5)
-					mtxURLRquest.release()
-					#Compare last tweet time with gotten timelines(5)
+					arTimeline = self.__twAPI.GetUserTimeline(screen_name=sID,count=self.__MAX_TIMELINES_COUNT)
+					#Compare last tweet time with gotten timelines(__MAX_TIMELINES_COUNT)
 					arTimeline.reverse()
 					for Timeline in arTimeline :
 						#If last tweet time is older then new tweet, print new tweet
@@ -97,18 +97,12 @@ class TwitterSender(threading.Thread):
 						time.sleep(0.11)
 					#--end of for
 				#--end of for
-				#For thread safe
-				time.sleep(0.05)
 			except Exception as err:
-				if mtxURLRquest.locked == True : 
-					mtxURLRquest.release()
-				#--end of if
 				print('TWITTER THREAD ERROR TIME : ', datetime.datetime.now())
 				print('TWITTER THREADERROR : ', err)
 				#bug : if error is Request Timeout, can't use API(network)
 				if err != 'Timed out' :
 					TelegramSendMessage(sTelegramAdmin, 'ERROR : ' + str(err))
-				continue
 			#--end of try
 		#--end of while
 	#--end of run
@@ -211,22 +205,17 @@ class InstaSender(threading.Thread):
 """
 
 def TelegramSendMessage(sID, sText):
-	mtxURLRquest.acquire()
 	telBot.send_message(chat_id=sID, text=sText)
-	mtxURLRquest.release()
 #--end of TelegramSendMessage
 
 def PapagoSMT(sText):
 	sText = PAPAGO_JP_TO_KR_QUERY + sText
-	mtxURLRquest.acquire()
 	sTranslated = json.loads(urllib.request.urlopen(reqPapago, data=sText.encode('utf-8')).read().decode('utf-8'))['message']['result']['translatedText']
-	mtxURLRquest.release()
 	return sTranslated
 #--end of PapagoSMT
 	
 if __name__ == '__main__':
 
-	mtxURLRquest = threading.Lock()
 	
 	#Read configfile for API keys
 	iniPapago = configparser.RawConfigParser()
@@ -254,8 +243,6 @@ if __name__ == '__main__':
 
 	#Run Thread
 	tsTwitterSender = TwitterSender()
-#	istInstaSender = InstaSender()
-#	arThreads = [tsTwitterSender, istInstaSender]
 	arThreads = [tsTwitterSender]
 	for t in arThreads:
 		t.start()
@@ -267,5 +254,5 @@ if __name__ == '__main__':
 		#--end of for
 	#--end of while
 
-	print('End of program. Never com here')
+	print('End of program. Never come here')
 #--end of if
