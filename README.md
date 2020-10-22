@@ -115,7 +115,3 @@ $ python3 NamaoqursBot/src/NamaqoursBot.py
 
 ## License
 This program follows MIT license. Please read LICENSE.txt
-
-If you use this program as commercial, you MUST notify to green0apple@naver.com before use it.
-
-If you use this program as non-commercial, please nofity to green0apple@naver.com.
