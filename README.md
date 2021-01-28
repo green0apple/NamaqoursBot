@@ -1,3 +1,6 @@
+! This project is changed to Transwitt project (https://github.com/green0apple/transwitt)
+! Transwitt is under development, and Golang (But i will make Transwitt as Python)
+
 ! If you have any question, please contact to "green0apple@naver.com"(Only Korean, Japanese, English)
 
 
